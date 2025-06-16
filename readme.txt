@@ -17,11 +17,13 @@ HuggingFace Setup
 10, Click the '3 Dots' next to settings
 11, Choose 'Embed this Space'. It will show you the url of the space. Your own proxy url, Copy The Url & Keep Safe
 
+========================================================================
+
 Quick setup
 See url below click the 3 dots (top right) and select duplicate this space
 https://huggingface.co/spaces/dadproxy-tfms-xyz/dadnewquicksetup
 
-====================================================================
+========================================================================
 
 Self Hosting NEEDS TESTING
 

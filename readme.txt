@@ -24,6 +24,9 @@ Ignore everything above and click the url below, click the 3 dots (top right) an
 Give it a name and change to public.
 https://huggingface.co/spaces/dadproxy-tfms-xyz/dadnewquicksetup
 
+When the build says running
+Click the '3 Dots' next to settings
+Choose 'Embed this Space'. It will show you the url of the space. Your own proxy url, Copy The Url & Keep Safe
 ========================================================================
 
 Self Hosting NEEDS TESTING MIGHT NOT WORK

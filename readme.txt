@@ -20,7 +20,7 @@ HuggingFace Setup
 ========================================================================
 
 Quick setup
-See url below click the 3 dots (top right) and select duplicate this space
+Ignore everything above and click the url below, click the 3 dots (top right) and select duplicate this space, Give it a name and change to public.
 https://huggingface.co/spaces/dadproxy-tfms-xyz/dadnewquicksetup
 
 ========================================================================

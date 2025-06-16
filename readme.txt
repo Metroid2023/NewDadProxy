@@ -26,7 +26,7 @@ https://huggingface.co/spaces/dadproxy-tfms-xyz/dadnewquicksetup
 
 ========================================================================
 
-Self Hosting NEEDS TESTING
+Self Hosting NEEDS TESTING MIGHT NOT WORK
 
 1, Clone the repo:
 git clone https://github.com/MarkMCFC/NewDadProxy

@@ -1,4 +1,6 @@
-DaddyLive New Prox, this is a new setup to the other proxy
+DaddyLive New Proxy, this is a new setup to the other proxy
+
+Example of how to use your url
 https://your-hugging.hf.space/playlist/channels.m3u8
 https://your-hugging.hf.space/playlist/events.m3u8
 

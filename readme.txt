@@ -20,3 +20,16 @@ HuggingFace Setup
 Quick setup
 See url below click the 3 dots (top right) and select duplicate this space
 https://huggingface.co/spaces/dadproxy-tfms-xyz/dadnewquicksetup
+
+====================================================================
+
+Self Hosting NEEDS TESTING
+
+1, Clone the repo:
+git clone https://github.com/MarkMCFC/NewDadProxy
+
+2, SSH into the daddy folder (which is called NewDadProxy):
+cd NewDadProxy
+
+3, Launch the service:
+docker-compose up -d --build

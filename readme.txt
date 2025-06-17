@@ -43,3 +43,5 @@ cd NewDadProxy
 
 3, Launch the service:
 docker-compose up -d --build
+
+Visit https://forum.tfms.xyz for more

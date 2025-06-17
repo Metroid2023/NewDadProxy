@@ -393,7 +393,7 @@ def proxy_key():
 @app.route('/playlist/channels.m3u8')
 def playlist_channels():
     """Gibt eine modifizierte Playlist mit Proxy-Links zurück"""
-    playlist_url = "https://raw.githubusercontent.com/MarkMCFC/tfms.xyz/refs/heads/main/daddylive-channels.m3u8"
+    playlist_url = "https://raw.githubusercontent.com/eAzTeA123/channel-events/refs/heads/main/channels.m3u8"
     
     try:
         host_url = request.host_url.rstrip('/')

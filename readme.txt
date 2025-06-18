@@ -11,7 +11,7 @@ When the build says running
 Click the '3 Dots' next to settings
 Choose 'Embed this Space'. It will show you the url of the space. Your own proxy url, Copy The Url & Keep Safe
 
-Example of how to use your url
+Example of how to use your url, Load into any browser to download your playlists
 https://your-hugging.hf.space/playlist/channels.m3u8
 https://your-hugging.hf.space/playlist/events.m3u8
 

@@ -1,8 +1,19 @@
 DaddyLive New Proxy, this is a new setup to the other proxy. Live Events WORK
 
+Quick setup, Sign-in to huggingface first
+Ignore everything above and click the url below, click the 3 dots (top right) and select duplicate this space
+Give it a name and change to public.
+https://huggingface.co/spaces/dadproxy-tfms-xyz/dadnewquicksetup
+
+When the build says running
+Click the '3 Dots' next to settings
+Choose 'Embed this Space'. It will show you the url of the space. Your own proxy url, Copy The Url & Keep Safe
+
 Example of how to use your url
 https://your-hugging.hf.space/playlist/channels.m3u8
 https://your-hugging.hf.space/playlist/events.m3u8
+========================================================================
+
 
 HuggingFace Setup
 1, Download the full repo to your PC, (To download click the code button above and download as zip & then extract the zip file)
@@ -17,20 +28,6 @@ HuggingFace Setup
 10, Click the '3 Dots' next to settings
 11, Choose 'Embed this Space'. It will show you the url of the space. Your own proxy url, Copy The Url & Keep Safe
 
-========================================================================
-
-Quick setup, Sign-in to huggingface first
-Ignore everything above and click the url below, click the 3 dots (top right) and select duplicate this space
-Give it a name and change to public.
-https://huggingface.co/spaces/dadproxy-tfms-xyz/dadnewquicksetup
-
-When the build says running
-Click the '3 Dots' next to settings
-Choose 'Embed this Space'. It will show you the url of the space. Your own proxy url, Copy The Url & Keep Safe
-
-Example of how to use your url
-https://your-hugging.hf.space/playlist/channels.m3u8
-https://your-hugging.hf.space/playlist/events.m3u8
 ========================================================================
 
 Self Hosting NEEDS TESTING MIGHT NOT WORK

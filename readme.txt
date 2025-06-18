@@ -15,7 +15,7 @@ https://your-hugging.hf.space/playlist/events.m3u8
 
 ========================================================================
 
-HuggingFace Setup for more avanced users
+HuggingFace Setup for more advanced users
 
 1, Download the full repo to your PC, (To download click the code button above and download as zip & then extract the zip file)
 2, Now sign up for a FREE ACCOUNT - https://huggingface.co - This is going to host your proxy/streams

@@ -1,7 +1,7 @@
 DaddyLive New Proxy, this is a new setup to the other proxy. Live Events WORK
 
 Quick setup, Sign-in to huggingface first
-Click the url below, Click the 3 dots (top right) & select duplicate this space
+Click the url below then Click the 3 dots (top right side) & select duplicate this space
 Give it a name and change it to public.
 https://huggingface.co/spaces/dadproxy-tfms-xyz/dadnewquicksetup
 

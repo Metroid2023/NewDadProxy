@@ -12,10 +12,11 @@ Choose 'Embed this Space'. It will show you the url of the space. Your own proxy
 Example of how to use your url
 https://your-hugging.hf.space/playlist/channels.m3u8
 https://your-hugging.hf.space/playlist/events.m3u8
+
 ========================================================================
 
+HuggingFace Setup for more avanced users
 
-HuggingFace Setup
 1, Download the full repo to your PC, (To download click the code button above and download as zip & then extract the zip file)
 2, Now sign up for a FREE ACCOUNT - https://huggingface.co - This is going to host your proxy/streams
 3, On HuggingFace look to the top‑rightish corner & click 'Spaces' Then Click 'New Space'

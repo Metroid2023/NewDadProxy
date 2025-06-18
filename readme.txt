@@ -48,6 +48,10 @@ cd NewDadProxy
 3, Launch the service:
 docker-compose up -d --build
 
+Visit the proxy at
+http://localhost:7860
+http://localhost:7860/proxy?url=https://new.newkso.ru/ddy6/***/mono.m3u8
+
 ========================================================================
 
 Visit https://forum.tfms.xyz for more

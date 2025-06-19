@@ -34,7 +34,7 @@ def resolve_m3u8_link(url, headers=None):
 
     print(f"Tentativo di risoluzione URL: {url}")
     # Utilizza gli header forniti, altrimenti usa un User-Agent di default
-    current_headers = headers if headers else {'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/133.0.0.0+Safari/537.36'}
+    current_headers = headers if headers else {'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:139.0) Gecko/20100101 Firefox/139.0'}
 
     initial_response_text = None
     final_url_after_redirects = None
@@ -459,7 +459,7 @@ def fetch_schedule_data():
         "sec-fetch-mode": "cors",
         "sec-fetch-site": "same-origin",
         "sec-gpc": "1",
-        "user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Safari/537.36"
+        "user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:139.0) Gecko/20100101 Firefox/139.0"
     }
     
     try:

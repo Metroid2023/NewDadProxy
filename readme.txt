@@ -55,3 +55,4 @@ http://localhost:7860/proxy?url=https://new.newkso.ru/ddy6/***/mono.m3u8
 ========================================================================
 
 Visit https://forum.tfms.xyz for more
+As Always Full Credit goes to the guy who built the originally proxy.

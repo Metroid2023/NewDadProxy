@@ -35,7 +35,6 @@ def resolve_m3u8_link(url, headers=None):
     print(f"Tentativo di risoluzione URL: {url}")
     # Utilizza gli header forniti, altrimenti usa un User-Agent di default
     current_headers = headers if headers else {'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/133.0.0.0+Safari/537.36'}
-
     initial_response_text = None
     final_url_after_redirects = None
 
@@ -227,7 +226,7 @@ def proxy_m3u():
         return "Errore: Parametro 'url' mancante", 400
 
     default_headers = {
-        "User-Agent": "Mozilla/5.0 (iPhone; CPU iPhone OS 14_5 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) FxiOS/33.0 Mobile/15E148 Safari/605.1.15",
+        "User-Agent": "Mozilla/5.0 (iPhone; CPU iPhone OS 18_5 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/18.5 Mobile/15E148 Safari/604.1",
         "Referer": "https://vavoo.to/",
         "Origin": "https://vavoo.to"
     }
@@ -244,14 +243,14 @@ def proxy_m3u():
     processed_url = m3u_url
     
     # Trasforma /stream/ in /embed/ per Daddylive
-    if '/stream/stream-' in m3u_url and 'daddylive.dad' in m3u_url:
+    if '/stream/stream-' in m3u_url and 'thedaddy.click' in m3u_url:
         processed_url = m3u_url.replace('/stream/stream-', '/embed/stream-')
         print(f"URL {m3u_url} trasformato da /stream/ a /embed/: {processed_url}")
     match_premium_m3u8 = re.search(r'/premium(\d+)/mono\.m3u8$', m3u_url)
 
     if match_premium_m3u8:
         channel_number = match_premium_m3u8.group(1)
-        transformed_url = f"https://daddylive.dad/embed/stream-{channel_number}.php"
+        transformed_url = f"https://thedaddy.click/embed/stream-{channel_number}.php"
         print(f"URL {m3u_url} corrisponde al pattern premium. Trasformato in: {transformed_url}")
         processed_url = transformed_url
     else:
@@ -444,14 +443,14 @@ def playlist_events():
 
 def fetch_schedule_data():
     """Holt die aktuellen Sendeplandaten von der Website"""
-    url = "https://daddylive.dad/schedule/schedule-generated.php"
+    url = "https://thedaddy.click/schedule/schedule-generated.php"
     headers = {
-        "authority": "daddylive.dad",
+        "authority": "thedaddy.click",
         "accept": "*/*",
         "accept-encoding": "gzip, deflate, br, zstd",
         "accept-language": "de-DE,de;q=0.9",
         "priority": "u=1, i",
-        "referer": "https://daddylive.dad/",
+        "referer": "https://thedaddy.click/",
         "sec-ch-ua": '"Brave";v="137", "Chromium";v="137", "Not/A)Brand";v="24"',
         "sec-ch-ua-mobile": "?0",
         "sec-ch-ua-platform": '"Windows"',
@@ -516,11 +515,11 @@ def json_to_m3u(data, host_url):
                 try:
                     channel_id_int = int(channel_id)
                     if channel_id_int > 999:
-                        stream_url = f"https://daddylive.dad/stream/bet.php?id=bet{channel_id}"
+                        stream_url = f"https://thedaddy.click/stream/bet.php?id=bet{channel_id}"
                     else:
-                        stream_url = f"https://daddylive.dad/stream/stream-{channel_id}.php"
+                        stream_url = f"https://thedaddy.click/stream/stream-{channel_id}.php"
                 except (ValueError, TypeError):
-                    stream_url = f"https://daddylive.dad/stream/stream-{channel_id}.php"
+                    stream_url = f"https://thedaddy.click/stream/stream-{channel_id}.php"
                 
                 # Generiere den Proxy-Link im gewünschten Format
                 proxy_url = f"{host_url}/proxy/m3u?url={stream_url}"
@@ -529,7 +528,7 @@ def json_to_m3u(data, host_url):
                     f'#EXTINF:-1 tvg-id="{channel_name}" group-title="{group_title}",{channel_name}\n'
                     '#EXTVLCOPT:http-referrer=https://lefttoplay.xyz/\n'
                     '#EXTVLCOPT:http-origin=https://lefttoplay.xyz\n'
-                    '#EXTVLCOPT:http-user-agent=Mozilla/5.0 (iPhone; CPU iPhone OS 17_7 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/18.0 Mobile/15E148 Safari/604.1\n'
+                    '#EXTVLCOPT:http-user-agent=Mozilla/5.0 (iPhone; CPU iPhone OS 18_5 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/18.5 Mobile/15E148 Safari/604.1\n'
                     f'{proxy_url}\n\n'
                 )
     

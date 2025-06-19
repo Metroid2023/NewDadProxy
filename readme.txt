@@ -8,7 +8,7 @@ Sign-in/up to huggingface first - https://huggingface.co
 
 Click the url below then Click the 3 dots (top right side) & select 'duplicate this space'
 Give it a NAME and change it to PUBLIC.
-https://huggingface.co/spaces/tfmsXYZ/dadnewproxy2
+https://huggingface.co/spaces/mcfc/newdadquicksetup123
 
 When the build says running
 Click the '3 Dots' next to settings

@@ -34,7 +34,7 @@ def resolve_m3u8_link(url, headers=None):
 
     print(f"Tentativo di risoluzione URL: {url}")
     # Utilizza gli header forniti, altrimenti usa un User-Agent di default
-    current_headers = headers if headers else {'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:139.0) Gecko/20100101 Firefox/139.0'}
+    current_headers = headers if headers else {'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/133.0.0.0+Safari/537.36'}
 
     initial_response_text = None
     final_url_after_redirects = None
@@ -227,7 +227,7 @@ def proxy_m3u():
         return "Errore: Parametro 'url' mancante", 400
 
     default_headers = {
-        "User-Agent": "Mozilla/5.0 (iPhone; CPU iPhone OS 18_4_1 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/18.4 Mobile/15E148 Safari/604.1",
+        "User-Agent": "Mozilla/5.0 (iPhone; CPU iPhone OS 14_5 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) FxiOS/33.0 Mobile/15E148 Safari/605.1.15",
         "Referer": "https://vavoo.to/",
         "Origin": "https://vavoo.to"
     }
@@ -247,6 +247,7 @@ def proxy_m3u():
     if '/stream/stream-' in m3u_url and 'thedaddy.click' in m3u_url:
         processed_url = m3u_url.replace('/stream/stream-', '/embed/stream-')
         print(f"URL {m3u_url} trasformato da /stream/ a /embed/: {processed_url}")
+    
     match_premium_m3u8 = re.search(r'/premium(\d+)/mono\.m3u8$', m3u_url)
 
     if match_premium_m3u8:
@@ -389,151 +390,6 @@ def proxy_key():
     
     except requests.RequestException as e:
         return f"Errore durante il download della chiave AES-128: {str(e)}", 500
-
-@app.route('/playlist/channels.m3u8')
-def playlist_channels():
-    """Gibt eine modifizierte Playlist mit Proxy-Links zurück"""
-    playlist_url = "https://raw.githubusercontent.com/MarkMCFC/NewDadProxy/refs/heads/main/channel.m3u8"
-    
-    try:
-        host_url = request.host_url.rstrip('/')
-        response = requests.get(playlist_url, timeout=10)
-        response.raise_for_status()
-        playlist_content = response.text
-        
-        modified_lines = []
-        for line in playlist_content.splitlines():
-            stripped_line = line.strip()
-            if stripped_line and not stripped_line.startswith('#'):
-                proxy_line = f"{host_url}/proxy/m3u?url={quote(stripped_line)}"
-                modified_lines.append(proxy_line)
-            else:
-                modified_lines.append(line)
-        
-        modified_content = '\n'.join(modified_lines)
-        return Response(modified_content, content_type="application/vnd.apple.mpegurl")
-
-    except requests.RequestException as e:
-        return f"Fehler beim Laden der Playlist: {str(e)}", 500
-    except Exception as e:
-        return f"Allgemeiner Fehler: {str(e)}", 500
-
-
-@app.route('/playlist/events.m3u8')
-def playlist_events():
-    """Generiert die Events-Playlist mit Proxy-Links bei jedem Aufruf"""
-    try:
-        # Hole die aktuelle Host-URL
-        host_url = request.host_url.rstrip('/')
-        
-        # Lade die Sendeplandaten
-        schedule_data = fetch_schedule_data()
-        if not schedule_data:
-            return "Fehler beim Abrufen der Sendeplandaten", 500
-        
-        # Konvertiere JSON in M3U mit Proxy-Links
-        m3u_content = json_to_m3u(schedule_data, host_url)
-        if not m3u_content:
-            return "Fehler beim Generieren der Playlist", 500
-            
-        return Response(m3u_content, content_type="application/vnd.apple.mpegurl")
-    
-    except Exception as e:
-        print(f"Fehler in /playlist/events: {str(e)}")
-        return f"Interner Serverfehler: {str(e)}", 500
-
-def fetch_schedule_data():
-    """Holt die aktuellen Sendeplandaten von der Website"""
-    url = "https://thedaddy.click/schedule/schedule-generated.php"
-    headers = {
-        "authority": "thedaddy.click",
-        "accept": "*/*",
-        "accept-encoding": "gzip, deflate, br, zstd",
-        "accept-language": "de-DE,de;q=0.9",
-        "priority": "u=1, i",
-        "referer": "https://thedaddy.click/",
-        "sec-ch-ua": '"Brave";v="137", "Chromium";v="137", "Not/A)Brand";v="24"',
-        "sec-ch-ua-mobile": "?0",
-        "sec-ch-ua-platform": '"Windows"',
-        "sec-fetch-dest": "empty",
-        "sec-fetch-mode": "cors",
-        "sec-fetch-site": "same-origin",
-        "sec-gpc": "1",
-        "user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:139.0) Gecko/20100101 Firefox/139.0"
-    }
-    
-    try:
-        response = requests.get(url, headers=headers, timeout=30)
-        if response.status_code == 200:
-            return response.json()
-        else:
-            print(f"Fehler beim Abrufen der Daten: Status-Code {response.status_code}")
-            return None
-    except Exception as e:
-        print(f"Fehler beim Abrufen der Daten: {e}")
-        return None
-
-def json_to_m3u(data, host_url):
-    """Konvertiert JSON-Daten in M3U-Format mit Proxy-Links im gewünschten Format"""
-    if not data:
-        return None
-        
-    m3u_content = '#EXTM3U\n\n'
-    
-    try:
-        main_key = list(data.keys())[0]
-        categories = data[main_key]
-    except Exception as e:
-        print(f"Fehler beim Verarbeiten der JSON-Daten: {e}")
-        return None
-
-    for category_name, events in categories.items():
-        if not isinstance(events, list):
-            continue
-            
-        for event in events:
-            if not isinstance(event, dict):
-                continue
-                
-            group_title = event.get("event", "Unknown Event")
-            channels_list = []
-            
-            for channel_key in ["channels", "channels2"]:
-                channels = event.get(channel_key, [])
-                if isinstance(channels, dict):
-                    channels_list.extend(channels.values())
-                elif isinstance(channels, list):
-                    channels_list.extend(channels)
-            
-            for channel in channels_list:
-                if not isinstance(channel, dict):
-                    continue
-                    
-                channel_name = channel.get("channel_name", "Unknown Channel")
-                channel_id = channel.get("channel_id", "0")
-                
-                # Generiere die Stream-URL basierend auf der ID
-                try:
-                    channel_id_int = int(channel_id)
-                    if channel_id_int > 999:
-                        stream_url = f"https://thedaddy.click/stream/bet.php?id=bet{channel_id}"
-                    else:
-                        stream_url = f"https://thedaddy.click/stream/stream-{channel_id}.php"
-                except (ValueError, TypeError):
-                    stream_url = f"https://thedaddy.click/stream/stream-{channel_id}.php"
-                
-                # Generiere den Proxy-Link im gewünschten Format
-                proxy_url = f"{host_url}/proxy/m3u?url={stream_url}"
-                
-                m3u_content += (
-                    f'#EXTINF:-1 tvg-id="{channel_name}" group-title="{group_title}",{channel_name}\n'
-                    '#EXTVLCOPT:http-referrer=https://lefttoplay.xyz/\n'
-                    '#EXTVLCOPT:http-origin=https://lefttoplay.xyz\n'
-                    '#EXTVLCOPT:http-user-agent=Mozilla/5.0 (iPhone; CPU iPhone OS 18_4_1 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/18.4 Mobile/15E148 Safari/604.1'
-                    f'{proxy_url}\n\n'
-                )
-    
-    return m3u_content
 
 @app.route('/')
 def index():

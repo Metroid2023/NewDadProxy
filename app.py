@@ -526,8 +526,8 @@ def json_to_m3u(data, host_url):
                 
                 m3u_content += (
                     f'#EXTINF:-1 tvg-id="{channel_name}" group-title="{group_title}",{channel_name}\n'
-                    '#EXTVLCOPT:http-referrer=https://lefttoplay.xyz/\n'
-                    '#EXTVLCOPT:http-origin=https://lefttoplay.xyz\n'
+                    '#EXTVLCOPT:http-referrer=https://forcedtoplay.xyz/\n'
+                    '#EXTVLCOPT:http-origin=https://forcedtoplay.xyz\n'
                     '#EXTVLCOPT:http-user-agent=Mozilla/5.0 (iPhone; CPU iPhone OS 18_5 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/18.5 Mobile/15E148 Safari/604.1\n'
                     f'{proxy_url}\n\n'
                 )

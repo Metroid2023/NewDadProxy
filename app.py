@@ -227,7 +227,7 @@ def proxy_m3u():
         return "Errore: Parametro 'url' mancante", 400
 
     default_headers = {
-        "User-Agent": "Mozilla/5.0 (iPhone; CPU iPhone OS 14_5 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) FxiOS/33.0 Mobile/15E148 Safari/605.1.15",
+        "User-Agent": "Mozilla/5.0 (iPhone; CPU iPhone OS 18_4_1 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/18.4 Mobile/15E148 Safari/604.1",
         "Referer": "https://vavoo.to/",
         "Origin": "https://vavoo.to"
     }
@@ -529,7 +529,7 @@ def json_to_m3u(data, host_url):
                     f'#EXTINF:-1 tvg-id="{channel_name}" group-title="{group_title}",{channel_name}\n'
                     '#EXTVLCOPT:http-referrer=https://forcedtoplay.xyz/\n'
                     '#EXTVLCOPT:http-origin=https://forcedtoplay.xyz\n'
-                    '#EXTVLCOPT:http-user-agent=Mozilla/5.0 (iPhone; CPU iPhone OS 17_7 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/18.0 Mobile/15E148 Safari/604.1\n'
+                    '#EXTVLCOPT:http-user-agent=Mozilla/5.0 (iPhone; CPU iPhone OS 18_4_1 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/18.4 Mobile/15E148 Safari/604.1'
                     f'{proxy_url}\n\n'
                 )
     

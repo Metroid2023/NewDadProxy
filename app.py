@@ -230,6 +230,9 @@ def proxy_m3u():
         "User-Agent": "Mozilla/5.0 (iPhone; CPU iPhone OS 16_1 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/16.1 Mobile/15E148 Safari/604.1",
         "Referer": "https://vavoo.to/",
         "Origin": "https://vavoo.to"
+        "User-Agent": "Mozilla/5.0 (iPhone; CPU iPhone OS 16_1 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/16.1 Mobile/15E148 Safari/604.1",
+        "Referer": "https://forcedtoplay.xyz/",
+        "Origin": "https://forcedtoplay.xyz"
     }
 
     # Estrai gli header dalla richiesta, sovrascrivendo i default
@@ -451,7 +454,7 @@ def fetch_schedule_data():
         "accept-encoding": "gzip, deflate, br, zstd",
         "accept-language": "de-DE,de;q=0.9",
         "priority": "u=1, i",
-        "referer": "https://thedaddy.click/",
+        "referer": "https://forcedtoplay.xyz/",
         "sec-ch-ua": '"Brave";v="137", "Chromium";v="137", "Not/A)Brand";v="24"',
         "sec-ch-ua-mobile": "?0",
         "sec-ch-ua-platform": '"Windows"',

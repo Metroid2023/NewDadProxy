@@ -625,8 +625,8 @@ def json_to_m3u(data, host_url):
 @app.route('/')
 def index():
     """Pagina principale che mostra un messaggio di benvenuto"""
-    return "And your In!"
+    return "Proxy started!"
 
 if __name__ == '__main__':
-    print("Proxy started!")
+    print("And Your In!")
     app.run(host="0.0.0.0", port=7860, debug=False)

@@ -329,8 +329,8 @@ def proxy_m3u():
     
     # Trasforma /stream/ in /embed/ per Daddylive
     if '/stream/stream-' in m3u_url and 'thedaddy.click' in m3u_url:
-        processed_url = m3u_url.replace('/stream/stream-', '/embed/stream-')
-        print(f"URL {m3u_url} trasformato da /stream/ a /embed/: {processed_url}")
+        processed_url = m3u_url.replace('/cast/stream-', '/embed/stream-')
+        print(f"URL {m3u_url} trasformato da /cast/ a /embed/: {processed_url}")
     
     match_premium_m3u8 = re.search(r'/premium(\d+)/mono\.m3u8$', m3u_url)
 

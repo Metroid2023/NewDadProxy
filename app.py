@@ -2,7 +2,7 @@ from flask import Flask, request, Response
 import requests
 from urllib.parse import urlparse, urljoin, quote, unquote
 import re
-import json
+import traceback
 import os
 
 app = Flask(__name__)
@@ -24,74 +24,28 @@ def replace_key_uri(line, headers_query):
 
 def resolve_m3u8_link(url, headers=None):
     """
-    Tenta di risolvere un URL M3U8 supportando sia URL puliti che URL con header concatenati.
-    Gestisce automaticamente l'estrazione degli header dai parametri dell'URL.
+    Tenta di risolvere un URL M3U8.
+    Prova prima la logica specifica per iframe (tipo Daddylive), inclusa la lookup della server_key.
+    Se fallisce, verifica se l'URL iniziale era un M3U8 diretto e lo restituisce.
     """
     if not url:
         print("Errore: URL non fornito.")
         return {"resolved_url": None, "headers": {}}
 
     print(f"Tentativo di risoluzione URL: {url}")
-    
-    # Inizializza gli header di default
-    current_headers = headers if headers else {
-        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/133.0.0.0 Safari/537.36'
-    }
-    
-    # **SUPPORTO PER ENTRAMBE LE VERSIONI**
-    clean_url = url
-    extracted_headers = {}
-    
-    # Verifica se l'URL contiene parametri header concatenati
-    if '&h_' in url or '%26h_' in url:
-        print("Rilevati parametri header nell'URL - Estrazione in corso...")
-        
-        # Gestisci sia il formato normale che quello URL-encoded
-        if '%26h_' in url:
-            # Per vavoo.to, sostituisci solo %26 con & senza doppia decodifica
-            if 'vavoo.to' in url.lower():
-                url = url.replace('%26', '&')
-                print(f"URL vavoo.to processato: {url}")
-            else:
-                # Per altri URL, applica la doppia decodifica completa
-                url = unquote(unquote(url))
-                print(f"URL con doppia decodifica: {url}")
-        
-        # Separa l'URL base dai parametri degli header
-        url_parts = url.split('&h_', 1)
-        clean_url = url_parts[0]
-        header_params = '&h_' + url_parts[1]
-        
-        # Estrai gli header dai parametri
-        for param in header_params.split('&'):
-            if param.startswith('h_'):
-                try:
-                    key_value = param[2:].split('=', 1)
-                    if len(key_value) == 2:
-                        key = unquote(key_value[0]).replace('_', '-')
-                        value = unquote(key_value[1])
-                        extracted_headers[key] = value
-                        print(f"Header estratto: {key} = {value}")
-                except Exception as e:
-                    print(f"Errore nell'estrazione dell'header {param}: {e}")
-        
-        # Combina gli header estratti con quelli esistenti
-        current_headers.update(extracted_headers)
-        print(f"URL pulito: {clean_url}")
-        print(f"Header finali: {current_headers}")
-    else:
-        print("URL pulito rilevato - Nessuna estrazione header necessaria")
+    # Utilizza gli header forniti, altrimenti usa un User-Agent di default
+    current_headers = headers if headers else {'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/133.0.0.0+Safari/537.36'}
 
     initial_response_text = None
     final_url_after_redirects = None
 
     # Verifica se è un URL di vavoo.to
-    is_vavoo = "vavoo.to" in clean_url.lower()
+    is_vavoo = "thedaddy.click" in url.lower()
 
     try:
         with requests.Session() as session:
-            print(f"Passo 1: Richiesta a {clean_url}")
-            response = session.get(clean_url, headers=current_headers, allow_redirects=True, timeout=(5, 15))
+            print(f"Passo 1: Richiesta a {url}")
+            response = session.get(url, headers=current_headers, allow_redirects=True, timeout=(5, 15))
             response.raise_for_status()
             initial_response_text = response.text
             final_url_after_redirects = response.url
@@ -106,9 +60,9 @@ def resolve_m3u8_link(url, headers=None):
                     }
                 else:
                     # Se non è un M3U8 diretto, restituisci l'URL originale per vavoo
-                    print(f"URL vavoo.to non è un M3U8 diretto: {clean_url}")
+                    print(f"URL vavoo.to non è un M3U8 diretto: {url}")
                     return {
-                        "resolved_url": clean_url,
+                        "resolved_url": url,
                         "headers": current_headers
                     }
 
@@ -131,12 +85,9 @@ def resolve_m3u8_link(url, headers=None):
                 print(f"Passo 3 (Iframe): Richiesta a {url2}")
                 response = session.get(url2, headers=current_headers, timeout=(5, 15))
                 response.raise_for_status()
-                # Applica la codifica corretta
-                response.encoding = response.apparent_encoding or 'utf-8'
                 iframe_response_text = response.text
                 print("Passo 3 (Iframe) completato.")
 
-                # ... resto del codice iframe rimane uguale ...
                 # Quarto passo (Iframe): Estrai parametri dinamici dall'iframe response
                 channel_key_match = re.search(r'(?s) channelKey = \"([^\"]*)"', iframe_response_text)
                 auth_ts_match = re.search(r'(?s) authTs\s*= \"([^\"]*)"', iframe_response_text)
@@ -216,20 +167,20 @@ def resolve_m3u8_link(url, headers=None):
                 else:
                     print("Fallback fallito: La risposta iniziale non era un M3U8 diretto.")
                     return {
-                        "resolved_url": clean_url,
+                        "resolved_url": url,
                         "headers": current_headers
                     }
 
     except requests.exceptions.RequestException as e:
         print(f"Errore durante la richiesta HTTP iniziale: {e}")
-        return {"resolved_url": clean_url, "headers": current_headers}
+        return {"resolved_url": url, "headers": current_headers}
     except Exception as e:
         print(f"Errore generico durante la risoluzione: {e}")
-        return {"resolved_url": clean_url, "headers": current_headers}
+        return {"resolved_url": url, "headers": current_headers}
 
 @app.route('/proxy')
 def proxy():
-    """Proxy per liste M3U che aggiunge automaticamente /proxy/m3u?url= con IP prima dei link"""
+    """Proxy per liste M3U che aggiunge automaticamente /m3u?url= con IP prima dei link"""
     m3u_url = request.args.get('url', '').strip()
     if not m3u_url:
         return "Errore: Parametro 'url' mancante", 400
@@ -243,49 +194,16 @@ def proxy():
         response.raise_for_status()
         m3u_content = response.text
         
+        # Modifica solo le righe che contengono URL (non iniziano con #)
         modified_lines = []
-        exthttp_headers_query_params = "" # Stringa per conservare gli header da #EXTHTTP
-
         for line in m3u_content.splitlines():
             line = line.strip()
-            if line.startswith('#EXTHTTP:'):
-                try:
-                    # Estrai la parte JSON dalla riga #EXTHTTP:
-                    json_str = line.split(':', 1)[1].strip()
-                    headers_dict = json.loads(json_str)
-                    
-                    # Costruisci la stringa dei parametri di query per gli header con doppia codifica
-                    temp_params = []
-                    for key, value in headers_dict.items():
-                        # Doppia codifica: prima codifica normale, poi codifica di nuovo
-                        encoded_key = quote(quote(key))
-                        encoded_value = quote(quote(str(value)))
-                        temp_params.append(f"h_{encoded_key}={encoded_value}")
-                    
-                    if temp_params:
-                        # Usa %26 invece di & come separatore per gli header
-                        exthttp_headers_query_params = "%26" + "%26".join(temp_params)
-                    else:
-                        exthttp_headers_query_params = ""
-                except Exception as e:
-                    print(f"Errore nel parsing di #EXTHTTP '{line}': {e}")
-                    exthttp_headers_query_params = "" # Resetta in caso di errore
-                modified_lines.append(line) # Mantieni la riga #EXTHTTP originale
-            elif line and not line.startswith('#'):
-                # Questa è una riga di URL del flusso
-                # Verifica se è un URL di Pluto.tv e saltalo
-                if 'pluto.tv' in line.lower():
-                    modified_lines.append(line)  # Mantieni l'URL originale senza proxy
-                    exthttp_headers_query_params = ""  # Resetta gli header
-                else:
-                    # Applica gli header #EXTHTTP se presenti e poi resettali
-                    # Assicurati che l'URL sia completamente codificato, inclusi gli slash
-                    encoded_line = quote(line, safe='')
-                    modified_line = f"http://{server_ip}/proxy/m3u?url={encoded_line}{exthttp_headers_query_params}"
-                    modified_lines.append(modified_line)
-                    exthttp_headers_query_params = ""  # Resetta gli header dopo averli usati
+            if line and not line.startswith('#'):
+                # Per tutti i link, usa il proxy normale
+                modified_line = f"http://{server_ip}/m3u?url={line}"
+                modified_lines.append(modified_line)
             else:
-                # Mantieni invariate le altre righe di metadati o righe vuote
+                # Mantieni invariate le righe di metadati
                 modified_lines.append(line)
         
         modified_content = '\n'.join(modified_lines)
@@ -303,25 +221,25 @@ def proxy():
 
 @app.route('/proxy/m3u')
 def proxy_m3u():
-    """Proxy per file M3U e M3U8 con supporto per entrambe le versioni di URL"""
+    """Proxy per file M3U e M3U8 con supporto per redirezioni e header personalizzati"""
     m3u_url = request.args.get('url', '').strip()
     if not m3u_url:
         return "Errore: Parametro 'url' mancante", 400
 
     default_headers = {
-        "User-Agent": "Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/48.0.2739.1442 Mobile Safari/537.36",
-        "Referer": "https://vavoo.to/",
-        "Origin": "https://vavoo.to"
+        "User-Agent": "Mozilla/5.0 (iPhone; CPU iPhone OS 14_5 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) FxiOS/33.0 Mobile/15E148 Safari/605.1.15",
+        "Referer": "https://forcedtoplay.xyz/",
+        "Origin": "https://forcedtoplay.xyz"
+        "Referer": "https://vecloud.eu/",
+        "Origin": "https://vecloud.eu"
     }
 
-    # Estrai gli header dalla richiesta (versione parametri query)
+    # Estrai gli header dalla richiesta, sovrascrivendo i default
     request_headers = {
         unquote(key[2:]).replace("_", "-"): unquote(value).strip()
         for key, value in request.args.items()
         if key.lower().startswith("h_")
     }
-    
-    # Combina header di default con quelli della richiesta
     headers = {**default_headers, **request_headers}
 
     # --- Logica per trasformare l'URL se necessario ---
@@ -329,9 +247,8 @@ def proxy_m3u():
     
     # Trasforma /stream/ in /embed/ per Daddylive
     if '/stream/stream-' in m3u_url and 'thedaddy.click' in m3u_url:
-        processed_url = m3u_url.replace('/cast/stream-', '/embed/stream-')
-        print(f"URL {m3u_url} trasformato da /cast/ a /embed/: {processed_url}")
-    
+        processed_url = m3u_url.replace('/stream/stream-', '/embed/stream-')
+        print(f"URL {m3u_url} trasformato da /stream/ a /embed/: {processed_url}")
     match_premium_m3u8 = re.search(r'/premium(\d+)/mono\.m3u8$', m3u_url)
 
     if match_premium_m3u8:
@@ -358,8 +275,6 @@ def proxy_m3u():
         print(f"Fetching M3U8 content from resolved URL: {resolved_url}")
         m3u_response = requests.get(resolved_url, headers=current_headers_for_proxy, allow_redirects=True, timeout=(10, 20)) # Timeout connessione 10s, lettura 20s
         m3u_response.raise_for_status()
-        # Applica la codifica corretta
-        m3u_response.encoding = m3u_response.apparent_encoding or 'utf-8'
         m3u_content = m3u_response.text
         final_url = m3u_response.url
 
@@ -367,7 +282,7 @@ def proxy_m3u():
         file_type = detect_m3u_type(m3u_content)
 
         if file_type == "m3u":
-            return Response(m3u_content, content_type="application/vnd.apple.mpegurl; charset=utf-8")
+            return Response(m3u_content, content_type="application/vnd.apple.mpegurl")
 
         # Processa contenuto M3U8
         parsed_url = urlparse(final_url)
@@ -387,7 +302,7 @@ def proxy_m3u():
             modified_m3u8.append(line)
 
         modified_m3u8_content = "\n".join(modified_m3u8)
-        return Response(modified_m3u8_content, content_type="application/vnd.apple.mpegurl; charset=utf-8")
+        return Response(modified_m3u8_content, content_type="application/vnd.apple.mpegurl")
 
     except requests.RequestException as e:
         print(f"Errore durante il download o la risoluzione del file: {str(e)}")
@@ -421,7 +336,7 @@ def proxy_resolve():
             f"#EXTM3U\n"
             f"#EXTINF:-1,Canale Risolto\n"
             f"/proxy/m3u?url={quote(result['resolved_url'])}&{headers_query}",
-            content_type="application/vnd.apple.mpegurl; charset=utf-8"
+            content_type="application/vnd.apple.mpegurl"
         )
         
     except Exception as e:
@@ -546,7 +461,7 @@ def fetch_schedule_data():
         "sec-fetch-mode": "cors",
         "sec-fetch-site": "same-origin",
         "sec-gpc": "1",
-        "user-agent": "Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/48.0.2739.1442 Mobile Safari/537.36"
+        "user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Safari/537.36"
     }
     
     try:
@@ -628,5 +543,5 @@ def index():
     return "Proxy started!"
 
 if __name__ == '__main__':
-    print("And Your In!")
+    print("Proxy started!")
     app.run(host="0.0.0.0", port=7860, debug=False)

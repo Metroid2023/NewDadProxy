@@ -531,14 +531,14 @@ def playlist_events():
 
 def fetch_schedule_data():
     """Holt die aktuellen Sendeplandaten von der Website"""
-    url = "https://daddylive.dad/schedule/schedule-generated.php"
+    url = "https://thedaddy.click/schedule/schedule-generated.php"
     headers = {
-        "authority": "daddylive.dad",
+        "authority": "thedaddy.click",
         "accept": "*/*",
         "accept-encoding": "gzip, deflate, br, zstd",
         "accept-language": "de-DE,de;q=0.9",
         "priority": "u=1, i",
-        "referer": "https://daddylive.dad/",
+        "referer": "https://thedaddy.click/",
         "sec-ch-ua": '"Brave";v="137", "Chromium";v="137", "Not/A)Brand";v="24"',
         "sec-ch-ua-mobile": "?0",
         "sec-ch-ua-platform": '"Windows"',

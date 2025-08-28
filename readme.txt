@@ -40,7 +40,7 @@ HuggingFace Setup for more advanced users
 Self Hosting NEEDS TESTING MIGHT NOT WORK
 
 1, Clone the repo:
-git clone https://github.com/MarkMCFC/NewDadProxy
+git clone https://github.com/Metroid2023/NewDadProxy
 
 2, SSH into the daddy folder (which is called NewDadProxy):
 cd NewDadProxy
@@ -56,4 +56,5 @@ http://localhost:7864/proxy?url=https://new.newkso.ru/ddy6/***/mono.m3u8
 
 Visit https://forum.tfms.xyz for more
 As Always Full Credit goes to the guy who built the originally proxy.
+
 

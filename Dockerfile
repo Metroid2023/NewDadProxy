@@ -16,7 +16,7 @@ CMD ["gunicorn", "app:app", \
      "-w", "4", \
      "--worker-class", "gevent", \
      "--worker-connections", "100", \
-     "-b", "0.0.0.0:7860", \
+     "-b", "0.0.0.0:7864", \
      "--timeout", "120", \
      "--keep-alive", "5", \
      "--max-requests", "1000", \
